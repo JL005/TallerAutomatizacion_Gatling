@@ -25,7 +25,6 @@ class LoginTest extends Simulation {
       .check(jsonPath("$.token").notNull)
     )
 
-
   setUp(
     scn.inject(constantUsersPerSec(10).during(5.seconds))
   ).protocols(httpConf)
