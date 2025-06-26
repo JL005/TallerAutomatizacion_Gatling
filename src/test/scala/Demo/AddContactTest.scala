@@ -28,9 +28,9 @@ class AddContactTest extends Simulation {
             .post("/contacts")
             .body(StringBody(
               """{
-              "email": "$email",
-              "password": "$password"
-            }"""
+                "email": "${Data.email}",
+                "password": "${Data.password}"
+              }"""
             )).asJson
             .check(jsonPath("$.token").saveAs("authToken"))
         )
@@ -61,7 +61,7 @@ class AddContactTest extends Simulation {
           }"""
           )).asJson
           .header("Authorization", "Bearer ${authToken}")
-          .check(status.is(200))
+          .check(status.is(201))
       )
     }
 

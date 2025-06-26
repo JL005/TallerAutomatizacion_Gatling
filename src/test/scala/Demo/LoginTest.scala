@@ -8,7 +8,7 @@ import Demo.TokenStore._
 
 class LoginTest extends Simulation {
 
-  val httpConf = http.baseUrl(url)
+  val httpConf = http.baseUrl(Data.url)
     .acceptHeader("application/json")
     .check(status.is(200))
 
@@ -17,8 +17,8 @@ class LoginTest extends Simulation {
       .post("/users/login")
       .body(StringBody(
         """{
-          "email": "$email",
-          "password": "$password"
+          "email": "${Data.email}",
+          "password": "${Data.password}"
         }"""
       )).asJson
       .check(status.is(200))
