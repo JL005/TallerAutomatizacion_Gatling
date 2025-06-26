@@ -11,42 +11,35 @@ class AddContactTest extends Simulation {
   val httpProtocol = http
     .baseUrl(url) // Cambia esto por tu URL
     .acceptHeader("application/json")
-    .check(status.is(200))
+    .contentTypeHeader("application/json")
 
-  // 🧩 Paso 1: Ejecutar login solo una vez por usuario virtual (VU)
-  val loginOnce =
-    exec(session => {
-      if (!session.contains("loginDone")) {
-        session.set("runLogin", true)
-      } else {
-        session.set("runLogin", false)
-      }
-    })
-      .doIf(session => session("runLogin").as[Boolean]) {
-        exec(
-          http("Login")
-            .post("/contacts")
-            .body(StringBody(
-              s"""{
+  val scn = scenario("Login una vez y luego llamadas autenticadas")
+    .exec(
+      http("Login")
+        .post("/users/login")
+        .body(StringBody(
+          s"""{
                 "email": "${Data.email}",
                 "password": "${Data.password}"
               }"""
-            )).asJson
-            .check(jsonPath("$.token").saveAs("authToken"))
-        )
-          .exec(session => {
-            session.set("loginDone", true)
-          })
+        )).asJson
+        .check(status.is(200))
+        .check(jsonPath("$.token").saveAs("authToken"))
+    ).exec(session => {
+      session("authToken").asOption[String] match {
+        case Some(token) =>
+          println(s"✅ Token obtenido: $token")
+          session
+        case None =>
+          println("❌ No se obtuvo el token")
+          session.markAsFailed
       }
-
-  val scn = scenario("Login una vez y luego llamadas autenticadas")
-    .exec(loginOnce)
-    .repeat(1) {
-      exec(
-        http("Llamada autenticada")
-          .post("/users/login")
-          .body(StringBody(
-            """{
+    })
+    .exec(
+      http("Llamada autenticada")
+        .post("/contacts")
+        .body(StringBody(
+          s"""{
                 "firstName": "Juan",
                 "lastName": "Lopera",
                 "birthdate": "1977-07-07",
@@ -59,11 +52,11 @@ class AddContactTest extends Simulation {
                 "postalCode": "12345",
                 "country": "CO"
           }"""
-          )).asJson
-          .header("Authorization", s"Bearer ${authToken}")
-          .check(status.is(201))
-      )
-    }
+        )).asJson
+        .header("Authorization", "Bearer ${authToken}")
+        .check(status.is(201))
+    )
+
 
   setUp(
     scn.inject(atOnceUsers(10)) // Puedes cambiar el número de usuarios
