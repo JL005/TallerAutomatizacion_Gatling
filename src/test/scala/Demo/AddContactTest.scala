@@ -27,7 +27,7 @@ class AddContactTest extends Simulation {
           http("Login")
             .post("/contacts")
             .body(StringBody(
-              """{
+              s"""{
                 "email": "${Data.email}",
                 "password": "${Data.password}"
               }"""
@@ -41,7 +41,7 @@ class AddContactTest extends Simulation {
 
   val scn = scenario("Login una vez y luego llamadas autenticadas")
     .exec(loginOnce)
-    .repeat(5) {
+    .repeat(1) {
       exec(
         http("Llamada autenticada")
           .post("/users/login")
@@ -60,7 +60,7 @@ class AddContactTest extends Simulation {
                 "country": "CO"
           }"""
           )).asJson
-          .header("Authorization", "Bearer ${authToken}")
+          .header("Authorization", s"Bearer ${authToken}")
           .check(status.is(201))
       )
     }

@@ -16,7 +16,7 @@ class LoginTest extends Simulation {
     exec(http("login")
       .post("/users/login")
       .body(StringBody(
-        """{
+        s"""{
           "email": "${Data.email}",
           "password": "${Data.password}"
         }"""
