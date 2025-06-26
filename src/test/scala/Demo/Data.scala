@@ -1,7 +1,7 @@
 package Demo
 
 object Data{
-    val url= "https://parabank.parasoft.com/parabank/services/bank"
-    val username = "john"
-    val password = "demo"
+    val url= "hhttps://thinking-tester-contact-list.herokuapp.com"
+    val email = "juan.loperam@udea.edu.co"
+    val password = "12345678q"
 }
