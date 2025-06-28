@@ -4,7 +4,6 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import Demo.Data._
 import scala.concurrent.duration._
-import Demo.TokenStore._
 
 class AddContactTest extends Simulation {
   val httpProtocol = http
