@@ -10,8 +10,9 @@ class LoginTest extends Simulation {
     .acceptHeader("application/json")
     .check(status.is(200))
 
-  val scn = scenario("Login").
-    exec(http("login")
+  val scn = scenario("Login")
+    .exec(
+      http("login")
       .post("/users/login")
       .body(StringBody(
         s"""{
@@ -23,4 +24,5 @@ class LoginTest extends Simulation {
       .check(jsonPath("$.token").notNull)
     )
   setUp(scn.inject(atOnceUsers(20)))
+    .protocols(httpProtocol)
 }
