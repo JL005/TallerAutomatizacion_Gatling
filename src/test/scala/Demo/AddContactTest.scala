@@ -7,37 +7,14 @@ import scala.concurrent.duration._
 import Demo.TokenStore._
 
 class AddContactTest extends Simulation {
-  // Configuración base
   val httpProtocol = http
-    .baseUrl(url) // Cambia esto por tu URL
+    .baseUrl(Data.url)
     .acceptHeader("application/json")
     .contentTypeHeader("application/json")
 
-  val scn = scenario("Login una vez y luego llamadas autenticadas")
+  val scn = scenario("Add conctact")
     .exec(
-      http("Login")
-        .post("/users/login")
-        .body(StringBody(
-          s"""{
-                "email": "${Data.email}",
-                "password": "${Data.password}"
-              }"""
-        )).asJson
-        .check(status.is(200))
-        .check(jsonPath("$.token").saveAs("authToken"))
-    ).pause(1)
-    .exec(session => {
-      session("authToken").asOption[String] match {
-        case Some(token) =>
-          println(s"✅ Token obtenido: $token")
-          session
-        case None =>
-          println("❌ No se obtuvo el token")
-          session.markAsFailed
-      }
-    })
-    .exec(
-      http("Llamada autenticada")
+      http("Add contacts")
         .post("/contacts")
         .body(StringBody(
           s"""{
@@ -54,12 +31,11 @@ class AddContactTest extends Simulation {
                 "country": "CO"
           }"""
         )).asJson
-        .header("Authorization", "Bearer ${authToken}")
+        .header("Authorization", s"Bearer ${Data.authToken}")
         .check(status.is(201))
     )
 
-
   setUp(
-    scn.inject(atOnceUsers(10)) // Puedes cambiar el número de usuarios
+    scn.inject(atOnceUsers(20))
   ).protocols(httpProtocol)
 }
