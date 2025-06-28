@@ -7,7 +7,7 @@ import scala.concurrent.duration._
 
 class AddContactTest extends Simulation {
   val httpProtocol = http
-    .baseUrl(Data.url)
+    .baseUrl(url)
     .acceptHeader("application/json")
     .contentTypeHeader("application/json")
 
