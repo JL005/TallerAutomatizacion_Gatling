@@ -22,6 +22,5 @@ class LoginTest extends Simulation {
       .check(status.is(200))
       .check(jsonPath("$.token").notNull)
     )
-
-  setUp(scn.inject(atOnceUsers(20)));
+  setUp(scn.inject(atOnceUsers(20)))
 }
