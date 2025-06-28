@@ -25,7 +25,8 @@ class AddContactTest extends Simulation {
         )).asJson
         .check(status.is(200))
         .check(jsonPath("$.token").saveAs("authToken"))
-    ).exec(session => {
+    ).pause(1)
+    .exec(session => {
       session("authToken").asOption[String] match {
         case Some(token) =>
           println(s"✅ Token obtenido: $token")
