@@ -8,6 +8,7 @@ class LoginTest extends Simulation {
 
   val httpConf = http.baseUrl(s"${Data.url}")
     .acceptHeader("application/json")
+    .contentTypeHeader("application/json")
     .check(status.is(200))
 
   val scn = scenario("Login")
