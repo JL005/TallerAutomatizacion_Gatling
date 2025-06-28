@@ -6,7 +6,7 @@ import Demo.Data._
 
 class LoginTest extends Simulation {
 
-  val httpConf = http.baseUrl(url)
+  val httpConf = http.baseUrl(s"${Data.url}")
     .acceptHeader("application/json")
     .check(status.is(200))
 
